@@ -14,31 +14,15 @@ const signIn: RequestHandler = async (req, res, next) => {
     const user = await User.findOne({ where: { email: data.email } })
     if (!user) return res.status(404).send("User not found.")
 
-    const body = JSON.stringify(data)
-    const apis = await Api.findAll({ where: { online: true }, attributes: ["url", "hash"], raw: true })
-    const checks = await Promise.all(apis.map((a) => bcrypt.compare(body, a.hash)))
+    const api = await Api.findOne({ where: { email: data.email } })
+    if (!api) return res.status(404).send("Device isn't registered.")
 
-    const urls = checks
-        .map((match, idx) => match ? idx : undefined)
-        .filter((idx) => idx !== undefined)
-        .map((idx) => apis.at(idx)!.url)
-    if (urls.length <= 0) return res.status(404).send("Server might be offline.")
-
-    const requests = urls.map((url) => fetch(url, { method: "POST", body }).catch(() => undefined))
-    const results = await Promise.all<Response | undefined>(requests)
-
-    const okidx = results.findIndex((r) => r && r.ok)
-    const nokidx = results.findIndex((r) => r && !r.ok)
-
-    if (okidx != -1) res.send({ ...(await results.at(okidx)!.json() as object), url: urls.at(okidx)! })
-    else if (nokidx != -1) res.status(results.at(nokidx)!.status).send(results.at(nokidx)!.statusText)
-    else return res.status(404).send("Server might be offline.")
-
-    const failures = results
-        .map((res, idx) => !!res ? idx : undefined)
-        .filter((idx) => idx !== undefined)
-        .map((idx) => urls.at(idx)!)
-    await Api.update({ online: false }, { where: { url: { [Op.in]: failures } } })
+    const match = await bcrypt.compare(data.password, api.hash)
+    if (!match) return res.status(400).send("Incorrect credentials provided.")
+    
+    const response = await fetch(api.url, { method: "POST", body: JSON.stringify(data) })
+    if (!response.ok) return res.status(response.status).send(await response.text())
+    res.send({ ...(await response.json() as object), url: api.url })
 }
 
 const signUp: RequestHandler = async (req, res, next) => {
