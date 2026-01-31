@@ -8,9 +8,10 @@ const post: RequestHandler = async (req, res, next) => {
     const { data, error, success } = ApiCreateSchema.safeParse(req.body)
     if (!success) return res.status(400).send(error.issues.at(0)?.message)
 
-    const { url } = data
-    const [api] = await Api.findOrCreate({ where: { url }, defaults: data, raw: true })
-    res.send(api)
+    const { url, hash } = data
+    const [api] = await Api.findOrCreate({ where: { url }, defaults: data })
+    api.update({ hash })
+    res.send(api.dataValues)
 }
 
 //
