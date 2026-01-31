@@ -1,0 +1,26 @@
+{
+	"name": "equail-proxy",
+	"version": "1.0.0",
+	"description": "The api for redirecting equail frontend to its own server.",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"dev": "tsx --env-file .env --watch src/index.ts",
+		"start": "node --env-file .env dist/src/index.js",
+		"build": "tsc",
+		"format": "prettier --write ."
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^5.2.1"
+	},
+	"devDependencies": {
+		"@tsconfig/node22": "^22.0.5",
+		"@types/node": "^25.1.0",
+		"prettier": "^3.8.1",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3"
+	}
+}
