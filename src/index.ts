@@ -16,4 +16,4 @@ app.use("/", (req, res) => res.send("I am api only."))
 app.use("/api", apiRoute.router)
 app.use("/auth", authRoute.router)
 
-app.listen(env.port, env.host, () => console.log(`Proxy active on http://${env.host}:${env.port}.`))
+export default app
