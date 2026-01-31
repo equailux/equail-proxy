@@ -1,6 +1,6 @@
 import env from "../config/env.config.js"
 import { Sequelize } from "sequelize"
-import { Api, apiAttributes, apiOptions } from "src/models/api.model.js"
+import { Api, apiAttributes, apiOptions } from "../models/api.model.js"
 
 //
 
