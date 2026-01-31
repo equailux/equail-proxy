@@ -6,11 +6,8 @@ import { User, userAttributes, userOptions } from "../models/user.model.js"
 //
 
 const boot = async () => {
-    const { user, pass, host, port, name, dialect } = env.database
-    const url = `${dialect}://${user}:${pass}@${host}:${port}`
-
-    const rawsqlize = new Sequelize(url, { logging: false })
-    await rawsqlize.query(`CREATE DATABASE IF NOT EXISTS \`${name}\`;`)
+    const { user, pass, host, port, name, protocol } = env.database
+    const url = `${protocol}://${user}:${pass}@${host}:${port}`
     const sequelize = new Sequelize(`${url}/${name}`, { logging: false })
 
     Api.init(apiAttributes, apiOptions(sequelize))

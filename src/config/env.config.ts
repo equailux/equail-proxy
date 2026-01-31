@@ -14,6 +14,7 @@ const env = {
         alter: process.env.DATABASE_ALTER === "true",
         force: process.env.DATABASE_FORCE === "true",
         dialect: process.env.DATABASE_DIALECT || "",
+        protocol: process.env.DATABASE_PROTOCOL || "",
     },
 }
 
