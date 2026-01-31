@@ -1,6 +1,7 @@
 import express from "express"
 import env from "./config/env.config.js"
 import database from "./boot/database.boot.js"
+import apiRoute from "./routes/api.route.js"
 
 //
 
@@ -10,4 +11,6 @@ await database.boot()
 
 //
 
-app.listen(env.port, env.host, () => console.log(`Api active on http://${env.host}:${env.port}.`))
+app.use("/api", apiRoute.router)
+
+app.listen(env.port, env.host, () => console.log(`Proxy active on http://${env.host}:${env.port}.`))
