@@ -1,4 +1,4 @@
-import env from "src/config/env.config.js"
+import env from "../config/env.config.js"
 
 //
 
