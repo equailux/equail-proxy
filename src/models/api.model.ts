@@ -11,6 +11,7 @@ import type {
 class Api extends Model<InferAttributes<Api>, InferCreationAttributes<Api>> {
     declare id: CreationOptional<number>
     declare url: string
+    declare hash: string
     declare createdAt: CreationOptional<Date>
     declare updatedAt: CreationOptional<Date>
 }
@@ -24,7 +25,11 @@ const apiAttributes: ModelAttributes<Api, InferAttributes<Api>> = {
         autoIncrement: true,
     },
     url: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(512),
+        allowNull: false,
+    },
+    hash: {
+        type: DataTypes.STRING(512),
         allowNull: false,
     },
     createdAt: {

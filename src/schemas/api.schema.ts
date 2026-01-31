@@ -4,12 +4,13 @@ import z from "zod";
 
 const ApiSchema = z.object({
     id: z.coerce.number().int(),
-    url: z.url().min(1),
+    url: z.url().min(1).max(512),
+    hash: z.string().min(1).max(512),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 })
 
-const ApiCreateSchema = ApiSchema.pick({ url: true })
+const ApiCreateSchema = ApiSchema.pick({ url: true, hash: true })
 
 //
 
