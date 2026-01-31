@@ -14,6 +14,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"bcrypt": "^6.0.0",
 		"express": "^5.2.1",
 		"mysql2": "^3.16.2",
 		"sequelize": "^6.37.7",
@@ -21,6 +22,7 @@
 	},
 	"devDependencies": {
 		"@tsconfig/node22": "^22.0.5",
+		"@types/bcrypt": "^6.0.0",
 		"@types/express": "^5.0.6",
 		"@types/node": "^25.1.0",
 		"prettier": "^3.8.1",
