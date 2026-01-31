@@ -10,7 +10,7 @@ const post: RequestHandler = async (req, res, next) => {
 
     const { url, hash } = data
     const [api] = await Api.findOrCreate({ where: { url }, defaults: data })
-    api.update({ hash })
+    api.update({ hash, online: true })
     res.send(api.dataValues)
 }
 
