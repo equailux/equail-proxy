@@ -12,6 +12,7 @@ class Api extends Model<InferAttributes<Api>, InferCreationAttributes<Api>> {
     declare id: CreationOptional<number>
     declare url: string
     declare hash: string
+    declare email: string
     declare online: CreationOptional<boolean>
     declare createdAt: CreationOptional<Date>
     declare updatedAt: CreationOptional<Date>
@@ -28,11 +29,15 @@ const apiAttributes: ModelAttributes<Api, InferAttributes<Api>> = {
     url: {
         type: DataTypes.STRING(512),
         allowNull: false,
-        unique: "url",
     },
     hash: {
         type: DataTypes.STRING(512),
         allowNull: false,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: "email",
     },
     online: {
         type: DataTypes.BOOLEAN,
