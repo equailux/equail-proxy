@@ -27,6 +27,7 @@ const apiAttributes: ModelAttributes<Api, InferAttributes<Api>> = {
     url: {
         type: DataTypes.STRING(512),
         allowNull: false,
+        unique: "url",
     },
     hash: {
         type: DataTypes.STRING(512),
