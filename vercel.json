@@ -1,6 +1,6 @@
 {
     "functions": {
-        "dist/index.js": {
+        "api/index.ts": {
             "runtime": "node@22.19.0"
         }
     }
