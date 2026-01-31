@@ -20,7 +20,8 @@ const signIn: RequestHandler = async (req, res, next) => {
     const match = await bcrypt.compare(data.password, api.hash)
     if (!match) return res.status(400).send("Incorrect credentials provided.")
     
-    const response = await fetch(api.url, { method: "POST", body: JSON.stringify(data) })
+    const headers = { "Content-Type": "application/json" }
+    const response = await fetch(api.url, { method: "POST", body: JSON.stringify(data), headers })
     if (!response.ok) return res.status(response.status).send(await response.text())
     res.send({ ...(await response.json() as object), url: api.url })
 }
