@@ -10,6 +10,7 @@ import pingTask from "./tasks/ping.task.js"
 
 const app = express()
 await database.boot()
+await pingTask.start()
 
 //
 
@@ -21,5 +22,3 @@ app.use("/auth", authRoute.router)
 app.listen(env.port, env.host, () => console.log(`Proxy active on http://${env.host}:${env.port}.`))
 
 //
-
-pingTask.start()

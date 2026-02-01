@@ -14,8 +14,10 @@ const boot = async () => {
     User.init(userAttributes, userOptions(sequelize))
 
     await sequelize.authenticate()
+    console.info("Database connected successfully.")
     const { sync, alter, force } = env.database
     if (sync) await sequelize.sync({ alter, force })
+    if (sync) console.info("Database synced successfully.")
 }
 
 //
