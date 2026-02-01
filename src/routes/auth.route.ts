@@ -1,6 +1,6 @@
 import express from "express"
 import authController from "../controllers/auth.controller.js"
-import logMiddleware from "src/middlewares/log.middleware.js"
+import logMiddleware from "../middlewares/log.middleware.js"
 
 //
 

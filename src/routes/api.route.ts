@@ -1,6 +1,6 @@
 import express from "express"
 import apiController from "../controllers/api.controller.js"
-import logMiddleware from "src/middlewares/log.middleware.js"
+import logMiddleware from "../middlewares/log.middleware.js"
 
 //
 
