@@ -19,8 +19,8 @@ const onFinish = (
 ) => () => {
     const timestamp = alpha.toISOString()
     const duration = Date.now() - alpha.getTime()
-    const status = res.status
-    const data = `[${origin}] ${method} ${url} - ${status} - ${duration}ms - ${timestamp}`
+    const status = (res as any).statusCode as number
+    const data = `[${origin}] ${method} ${url} - ${typeof status} - ${duration}ms - ${timestamp}`
     console.info(data)
 }
 
