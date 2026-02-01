@@ -3,7 +3,7 @@ import { RequestHandler } from "express";
 import { Op } from "sequelize";
 import { Api } from "../models/api.model.js";
 import { User } from "../models/user.model.js";
-import { UserSignInSchema, UserSignUpSchema } from "../schemas/user.schema.js";
+import { UserSafeSchema, UserSignInSchema, UserSignUpSchema } from "../schemas/user.schema.js";
 
 //
 
@@ -35,7 +35,7 @@ const signUp: RequestHandler = async (req, res, next) => {
 
     const password = await bcrypt.hash(data.password, 10)
     const user = await User.create({ ...data, password }, { raw: true })
-    res.send(user)
+    res.send(UserSafeSchema.parse(user))
 }
 
 //
