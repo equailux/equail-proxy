@@ -1,4 +1,5 @@
 import express from "express"
+import cors from "cors"
 import env from "./config/env.config.js"
 import database from "./boot/database.boot.js"
 import apiRoute from "./routes/api.route.js"
@@ -12,6 +13,7 @@ await database.boot()
 
 //
 
+app.use(cors())
 app.get("/", (_, res) => res.send("I am api only."))
 app.use("/api", apiRoute.router)
 app.use("/auth", authRoute.router)
