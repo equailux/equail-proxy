@@ -12,7 +12,7 @@ await database.boot()
 
 //
 
-app.use("/", (req, res) => res.send("I am api only."))
+app.get("/", (_, res) => res.send("I am api only."))
 app.use("/api", apiRoute.router)
 app.use("/auth", authRoute.router)
 
