@@ -16,6 +16,7 @@ await pingTask.start()
 
 app.use(cors())
 app.get("/", (_, res) => res.send("I am api only."))
+app.get("/healthz", (_, res) => res.send("I am api only."))
 app.use("/api", apiRoute.router)
 app.use("/auth", authRoute.router)
 
