@@ -26,15 +26,6 @@ app.post("/target", express.json(), (req, res) => {
     return res.send(target)
 })
 
-// --- For headers
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*")
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS")
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-    if (req.method === "OPTIONS") return res.sendStatus(200)
-    next()
-})
-
 // --- Proxy All Traffic
 app.use((req, res, next) => { console.info(`[Proxy]: ${req.ip} ${req.method} ${req.originalUrl}.`); next() })
 app.use((req, res) => proxy.web(req, res, { target }))
@@ -49,5 +40,8 @@ proxy.on("error", (err, req, res) => {
 // --- Listen
 const [host, port] = [process.env.HOST || "0.0.0.0", Number(process.env.PORT || 3128)]
 app.listen(port, host, () => console.log(`[Proxy]: Proxy active on http://${host}:${port}.`))
+
+// --- Heart Beat
+setInterval(() => fetch(process.env.SELF || "").catch(() => {}), 10 * 60 * 1000)
 
 //
