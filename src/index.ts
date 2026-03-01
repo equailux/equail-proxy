@@ -28,13 +28,12 @@ app.post("/target", (req, res) => {
 })
 
 // --- Proxy All Traffic
+app.use((req, res, next) => { console.info(`[Proxy]: ${req.ip} ${req.method} ${req.originalUrl}.`); next() })
 app.use((req, res) => proxy.web(req, res, { target }))
-app.use((req, res, next) => { console.info(`[Proxy]: ${req.ip} ${req.method} ${req.path}.`); next() })
 
 // --- Show Proxy Error
-proxy.on("error", (err, req, res, url) => {
-    console.info(err)
-    console.error(`[Proxy]: Error on url ${url}.`)
+proxy.on("error", (err, req, res) => {
+    console.error(`[Proxy]: ${err?.message}.`, err)
     if (!(res as any)?.headersSent) (res as any)?.writeHead(500, { "Content-Type": "text/plain" })
     res.end(`[Proxy]: We couldn't pass your request.`)
 })
