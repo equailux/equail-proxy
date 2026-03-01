@@ -1,5 +1,4 @@
 import express from "express"
-import cors from "cors"
 import httpProxy from "http-proxy"
 import z from "zod"
 
@@ -28,7 +27,13 @@ app.post("/target", express.json(), (req, res) => {
 })
 
 // --- For headers
-app.use(cors({ origin: "*" }))
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS")
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+    if (req.method === "OPTIONS") return res.sendStatus(200)
+    next()
+})
 
 // --- Proxy All Traffic
 app.use((req, res, next) => { console.info(`[Proxy]: ${req.ip} ${req.method} ${req.originalUrl}.`); next() })
