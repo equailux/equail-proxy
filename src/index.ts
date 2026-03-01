@@ -1,25 +1,45 @@
 import express from "express"
-import cors from "cors"
-import env from "./config/env.config.js"
-import database from "./boot/database.boot.js"
-import apiRoute from "./routes/api.route.js"
-import authRoute from "./routes/auth.route.js"
-import pingTask from "./tasks/ping.task.js"
+import httpProxy from "http-proxy"
+import z from "zod"
 
 //
 
+// --- Instances
 const app = express()
-await database.boot()
-await pingTask.start()
+const proxy = httpProxy.createProxyServer({ changeOrigin: true, preserveHeaderKeyCase: true, xfwd: false })
 
-//
-
-app.use(cors())
+// --- Predefined
+app.use(express.json())
 app.get("/", (_, res) => res.send("I am api only."))
-app.get("/healthz", (_, res) => res.send("I am api only."))
-app.use("/api", apiRoute.router)
-app.use("/auth", authRoute.router)
 
-app.listen(env.port, env.host, () => console.log(`Proxy active on http://${env.host}:${env.port}.`))
+// --- Target Url
+let target = process.env.TARGET || "https://equail-api-v1.onrender.com"
+console.info(`[Proxy]: Initial target set to ${target}.`)
+
+// --- Target Changer
+app.post("/target", (req, res) => {
+    const schema = z.object({ target: z.url() })
+    const { data, error, success } = schema.safeParse(req.body)
+    if (!success) return res.status(400).send(error.issues.at(0)?.message)
+    
+    console.info(`[Proxy]: Target changed to ${data.target}.`)
+    target = data.target
+    return res.send(target)
+})
+
+// --- Proxy All Traffic
+app.use((req, res) => proxy.web(req, res, { target }))
+
+// --- Show Proxy Error
+proxy.on("error", (err, req, res, url) => {
+    console.info(err)
+    console.error(`[Proxy]: Error on url ${url}.`)
+    if (!(res as any)?.headersSent) (res as any)?.writeHead(500, { "Content-Type": "text/plain" })
+    res.end(`[Proxy]: We couldn't pass your request.`)
+})
+
+// --- Listen
+const [host, port] = [process.env.HOST || "0.0.0.0", Number(process.env.PORT || 3128)]
+app.listen(port, host, () => console.log(`[Proxy]: Proxy active on http://${host}:${port}.`))
 
 //
