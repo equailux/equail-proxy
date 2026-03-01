@@ -9,7 +9,6 @@ const app = express()
 const proxy = httpProxy.createProxyServer({ changeOrigin: true, preserveHeaderKeyCase: true, xfwd: false })
 
 // --- Predefined
-app.use(express.json())
 app.get("/", (_, res) => res.send("I am api only."))
 
 // --- Target Url
@@ -17,7 +16,7 @@ let target = process.env.TARGET || "https://equail-api-v1.onrender.com"
 console.info(`[Proxy]: Initial target set to ${target}.`)
 
 // --- Target Changer
-app.post("/target", (req, res) => {
+app.post("/target", express.json(), (req, res) => {
     const schema = z.object({ target: z.url() })
     const { data, error, success } = schema.safeParse(req.body)
     if (!success) return res.status(400).send(error.issues.at(0)?.message)
