@@ -28,7 +28,7 @@ app.post("/target", express.json(), (req, res) => {
 })
 
 // --- For headers
-app.use(cors())
+app.use(cors({ origin: "*" }))
 
 // --- Proxy All Traffic
 app.use((req, res, next) => { console.info(`[Proxy]: ${req.ip} ${req.method} ${req.originalUrl}.`); next() })
