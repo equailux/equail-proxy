@@ -29,6 +29,7 @@ app.post("/target", (req, res) => {
 
 // --- Proxy All Traffic
 app.use((req, res) => proxy.web(req, res, { target }))
+app.use((req, res, next) => { console.info(`[Proxy]: ${req.ip} ${req.method} ${req.path}.`); next() })
 
 // --- Show Proxy Error
 proxy.on("error", (err, req, res, url) => {
