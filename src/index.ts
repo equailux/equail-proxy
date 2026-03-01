@@ -1,4 +1,5 @@
 import express from "express"
+import cors from "cors"
 import httpProxy from "http-proxy"
 import z from "zod"
 
@@ -25,6 +26,9 @@ app.post("/target", express.json(), (req, res) => {
     target = data.target
     return res.send(target)
 })
+
+// --- For headers
+app.use(cors())
 
 // --- Proxy All Traffic
 app.use((req, res, next) => { console.info(`[Proxy]: ${req.ip} ${req.method} ${req.originalUrl}.`); next() })
