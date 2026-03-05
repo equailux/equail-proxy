@@ -39,7 +39,14 @@ proxy.on("error", (err, req, res) => {
 
 // --- Listen
 const [host, port] = [process.env.HOST || "0.0.0.0", Number(process.env.PORT || 3128)]
-app.listen(port, host, () => console.log(`[Proxy]: Proxy active on http://${host}:${port}.`))
+const server = app.listen(port, host, () => console.log(`[Proxy]: Proxy active on http://${host}:${port}.`))
+
+// --- WebSocket
+server.on("upgrade", (req, socket, head) => {
+    const wsTarget = target.replace(/^http/, "ws")
+    console.info(`[Proxy]: WS upgrade ${req.url}.`)
+    proxy.ws(req, socket, head, { target: wsTarget }, (err) => socket.destroy())
+})
 
 // --- Heart Beat
 setInterval(() => fetch(process.env.SELF || "").catch(() => {}), 60 * 1000)
