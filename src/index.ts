@@ -42,6 +42,6 @@ const [host, port] = [process.env.HOST || "0.0.0.0", Number(process.env.PORT || 
 app.listen(port, host, () => console.log(`[Proxy]: Proxy active on http://${host}:${port}.`))
 
 // --- Heart Beat
-setInterval(() => fetch(process.env.SELF || "").catch(() => {}), 10 * 60 * 1000)
+setInterval(() => fetch(process.env.SELF || "").catch(() => {}), 60 * 1000)
 
 //
