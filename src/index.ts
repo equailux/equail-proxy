@@ -45,7 +45,4 @@ server.on("upgrade", (req, socket, head) => {
     proxy.ws(req, socket, head, { target: wsTarget }, (err) => socket.destroy())
 })
 
-// --- Heart Beat
-setInterval(() => fetch(process.env.SELF || "").catch(() => {}), 15 * 1000)
-
 //
