@@ -8,9 +8,6 @@ import z from "zod"
 const app = express()
 const proxy = httpProxy.createProxyServer({ changeOrigin: true, preserveHeaderKeyCase: true, xfwd: false })
 
-// --- Predefined
-app.get("/", (_, res) => res.send("I am api only."))
-
 // --- Target Url
 let target = process.env.TARGET || "https://equail-api-v1.onrender.com"
 console.info(`[Proxy]: Initial target set to ${target}.`)
@@ -49,6 +46,6 @@ server.on("upgrade", (req, socket, head) => {
 })
 
 // --- Heart Beat
-setInterval(() => fetch(process.env.SELF || "").catch(() => {}), 60 * 1000)
+setInterval(() => fetch(process.env.SELF || "").catch(() => {}), 15 * 1000)
 
 //
