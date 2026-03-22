@@ -1,4 +1,5 @@
 import express from "express"
+import cors from "cors"
 import httpProxy from "http-proxy"
 import z from "zod"
 
@@ -7,6 +8,9 @@ import z from "zod"
 // --- Instances
 const app = express()
 const proxy = httpProxy.createProxyServer({ changeOrigin: true, preserveHeaderKeyCase: true, xfwd: false })
+
+// --- Cors
+app.use(cors({ origin: process.env.CORS_ORIGIN?.split(", "), credentials: true }))
 
 // --- Target Url
 let target = process.env.TARGET || "https://equail-api-v1.onrender.com"
