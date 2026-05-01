@@ -7,7 +7,7 @@ import z from "zod"
 
 // --- Instances
 const app = express()
-const proxy = httpProxy.createProxyServer({ changeOrigin: true, preserveHeaderKeyCase: true, xfwd: false })
+const proxy = httpProxy.createProxyServer({ changeOrigin: true, preserveHeaderKeyCase: true, xfwd: false, ws: true })
 
 // --- Cors
 app.use(cors({ origin: process.env.CORS_ORIGIN?.split(", "), credentials: true }))
@@ -34,8 +34,15 @@ app.use((req, res) => proxy.web(req, res, { target }))
 // --- Show Proxy Error
 proxy.on("error", (err, req, res) => {
     console.error(`[Proxy]: ${err?.message}.`, err)
-    if (!(res as any)?.headersSent) (res as any)?.writeHead(500, { "Content-Type": "text/plain" })
-    res.end(`[Proxy]: We couldn't pass your request.`)
+    const socket = res as any
+    
+    if (typeof socket?.write === "function" && typeof socket?.writable === "boolean") {
+        if (socket.writable) socket.end()
+        return
+    }
+
+    if (!socket?.headersSent) socket?.writeHead(500, { "Content-Type": "text/plain" })
+    socket?.end(`[Proxy]: We couldn't pass your request.`)
 })
 
 // --- Listen
@@ -44,9 +51,13 @@ const server = app.listen(port, host, () => console.log(`[Proxy]: Proxy active o
 
 // --- WebSocket
 server.on("upgrade", (req, socket, head) => {
-    const wsTarget = target.replace(/^http/, "ws")
-    console.info(`[Proxy]: WS upgrade ${req.url}.`)
-    proxy.ws(req, socket, head, { target: wsTarget }, (err) => socket.destroy())
+    const wsTarget = target.replace(/^https/, "wss").replace(/^http(?!s)/, "ws")
+    console.info(`[Proxy]: WS upgrade ${req.url} -> ${wsTarget}.`)
+    
+    proxy.ws(req, socket, head, { target: wsTarget, changeOrigin: true }, (err) => {
+        console.error(`[Proxy]: WS error for ${req.url}: ${err?.message}.`, err)
+        socket.destroy()
+    })
 })
 
 //
